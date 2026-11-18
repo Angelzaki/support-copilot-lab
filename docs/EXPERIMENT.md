@@ -60,8 +60,24 @@ Resumen:
 - **a05** — falso escalate por falta de stemming → resuelto con familias `excepc`/`temp` y plurales.
 - **a07** — frase incorrecta (definición del límite vs comité) → resuelto priorizando términos de acción (`aprob`, `exced`) frente a términos de título (`limit`, `comercial`).
 
+## Set extendido (`samples/asks_extended.jsonl`)
+
+28 casos: 8 base + 8 paráfrasis (`p01`–`p08`) + 6 fuera de dominio (`e*`) + 6 trampas de vocabulario (`v*`) que reutilizan palabras del SOP (límite, contraseña, A1, comité) con tema ajeno.
+
+```bash
+python -m support_copilot experiment --extended
+```
+
+| Grupo | Acierto |
+|-------|---------|
+| Grounded (a+p) | 16 / 16 |
+| Escalate (e+v) | 12 / 12 |
+| Total | **28 / 28** |
+
+Mitigación: sinónimos de paráfrasis + escalate si la pregunta trae términos “duros” ausentes del SOP (`vacacion`, `wifi`, `router`, …).
+
 ## Amenazas a la validez
 
-- Set pequeño (14) y escrito por el autor del sistema; no hay consultas adversariales ni de otro dominio con vocabulario parecido al corpus.
-- Las preguntas fuera de corpus (`e01`–`e06`) comparten poco vocabulario con los SOPs; una pregunta fuera de corpus que reutilice términos como "límite" o "contraseña" podría superar el umbral.
-- Los resultados dependen del tamaño del corpus: el IDF con 3 documentos es muy ruidoso.
+- Sets escritos por el autor del sistema; el 28/28 no prueba generalización a corpus reales.
+- Los sinónimos y `SOFT_MISS` están calibrados a este sample; un dominio nuevo exige revisarlos.
+- El IDF con 3 documentos sigue siendo ruidoso.

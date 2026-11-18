@@ -19,6 +19,11 @@ def main(argv: list[str] | None = None) -> int:
     ask.add_argument("question")
     exp = sub.add_parser("experiment")
     exp.add_argument("--file", default=str(ROOT / "samples" / "asks.jsonl"))
+    exp.add_argument(
+        "--extended",
+        action="store_true",
+        help="Usa samples/asks_extended.jsonl (paráfrasis + trampas de vocabulario)",
+    )
     exp.add_argument("--format", choices=["json", "md"], default="md")
     serve = sub.add_parser("serve")
     serve.add_argument("--host", default="127.0.0.1")
@@ -30,7 +35,10 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(rag.ask(args.question), ensure_ascii=False, indent=2))
         return 0
     if args.cmd == "experiment":
-        report = evaluate(rag, load_asks(Path(args.file)))
+        asks_path = Path(args.file)
+        if args.extended:
+            asks_path = ROOT / "samples" / "asks_extended.jsonl"
+        report = evaluate(rag, load_asks(asks_path))
         if args.format == "json":
             print(json.dumps(report, ensure_ascii=False, indent=2))
         else:

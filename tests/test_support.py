@@ -34,3 +34,16 @@ def test_a07_elige_frase_del_comite():
     assert not result["escalated"]
     assert "comité" in result["answer"].lower() or "comite" in result["answer"].lower()
     assert "250" not in result["answer"]
+
+
+def test_vocab_trap_escala():
+    rag = SupportRag(DOCS)
+    result = rag.ask("¿Cuál es el límite de vacaciones comerciales por cuenta?")
+    assert result["escalated"] is True
+
+
+def test_paraphrase_clave_chat():
+    rag = SupportRag(DOCS)
+    result = rag.ask("¿Puedo pedir la clave nueva por el chat de soporte?")
+    assert not result["escalated"]
+    assert "chat" in result["answer"].lower()

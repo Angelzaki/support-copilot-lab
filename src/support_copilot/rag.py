@@ -42,11 +42,70 @@ def _fold(text: str) -> str:
     return text.translate(table).lower()
 
 
+# Sinónimos de paráfrasis frecuentes (antes de stem).
+SYNONYMS = {
+    "clave": "contrasena",
+    "claves": "contrasena",
+    "password": "contrasena",
+    "descontar": "descuento",
+    "descuenta": "descuento",
+    "descontado": "descuento",
+    "porcentaje": "descuento",
+    "autorizar": "aprob",
+    "autorizarlo": "aprob",
+    "autorizacion": "aprob",
+    "autoriza": "aprob",
+    "tope": "limit",
+    "restablecer": "reset",
+    "restablezco": "reset",
+    "confirmo": "verific",
+    "confirmar": "verific",
+    "paso": "exced",
+    "pase": "exced",
+}
+
+# Términos de la pregunta que no están en el SOP pero no bastan para escalar.
+SOFT_MISS = {
+    "soporte",
+    "pedir",
+    "nueva",
+    "nuevo",
+    "tiempo",
+    "maximo",
+    "aceptan",
+    "aceptar",
+    "debe",
+    "paso",
+    "puedo",
+    "puede",
+    "pueden",
+    "hasta",
+    "tambien",
+    "solo",
+    "basta",
+    "oficina",
+    "interno",
+    "area",
+    "durar",
+    "duracion",
+    "tras",
+    "firmar",
+    "firma",
+    "habil",
+    "habiles",
+    "activa",
+    "activar",
+    "chat",
+}
+
+
 def stem(token: str) -> str:
     t = _fold(token)
+    if t in SYNONYMS:
+        t = SYNONYMS[t]
     if len(t) <= 3:
         return t
-    if t.startswith("aprob") or t.startswith("aprue"):
+    if t.startswith("aprob") or t.startswith("aprue") or t.startswith("autor"):
         return "aprob"
     if t.startswith("exced"):
         return "exced"
@@ -56,14 +115,22 @@ def stem(token: str) -> str:
         return "temp"
     if t.startswith("limit"):
         return "limit"
+    if t.startswith("contrasen") or t.startswith("password"):
+        return "contrasena"
+    if t.startswith("descuent") or t.startswith("descont"):
+        return "descuento"
+    if t.startswith("verific") or t.startswith("confirm"):
+        return "verific"
+    if t.startswith("vacacion"):
+        return "vacacion"
+    # Sufijos largos solo sobre la forma original (evitar vacaciones→vacacion→vaca).
     for suf in ("mente", "ciones", "cion", "adores", "ador", "antes", "ante"):
-        if t.endswith(suf) and len(t) - len(suf) >= 3:
-            t = t[: -len(suf)]
-            break
+        if t.endswith(suf) and len(t) - len(suf) >= 4:
+            return t[: -len(suf)]
     if t.endswith("es") and len(t) > 5:
-        t = t[:-2]
-    elif t.endswith("s") and len(t) > 4 and not t.endswith("us"):
-        t = t[:-1]
+        return t[:-2]
+    if t.endswith("s") and len(t) > 4 and not t.endswith("us"):
+        return t[:-1]
     return t
 
 
@@ -75,10 +142,11 @@ def content_tokens(text: str) -> list[str]:
     out = []
     for raw in TOKEN.findall(text):
         folded = _fold(raw)
-        if folded in STOP or len(folded) <= 2:
+        keep_code = any(ch.isdigit() for ch in folded)
+        if folded in STOP or (len(folded) <= 2 and not keep_code):
             continue
         s = stem(raw)
-        if s in STOP or len(s) <= 2:
+        if s in STOP or (len(s) <= 2 and not keep_code):
             continue
         out.append(s)
     return out
@@ -132,10 +200,20 @@ class SupportRag:
         ranked.sort(key=lambda x: x[0], reverse=True)
         top_score, top = ranked[0]
         content = content_tokens(question)
+        ctx = set(tokenize(top["text"]))
+        # Soft tokens no cuentan para overlap (evitan falsos escalate por "soporte"/"pedir").
+        core = [t for t in content if t not in SOFT_MISS]
         overlap = 0.0
-        if content:
-            ctx = set(tokenize(top["text"]))
+        if core:
+            overlap = sum(1 for t in core if t in ctx) / len(core)
+        elif content:
             overlap = sum(1 for t in content if t in ctx) / len(content)
+        # Vocabulario del SOP en la pregunta + tema ajeno (vacaciones, wifi, etc.)
+        hard_miss = [
+            t for t in content if t not in ctx and t not in SOFT_MISS and len(t) >= 5
+        ]
+        if hard_miss:
+            return self._escalate(question, "tema fuera del SOP (términos no cubiertos)")
         if top_score < self.min_score or overlap < self.min_overlap:
             return self._escalate(question, "sin evidencia suficiente")
 
@@ -161,6 +239,7 @@ class SupportRag:
         ACTION = {
             "aprob",
             "exced",
+            "excepc",
             "requier",
             "super",
             "verific",
@@ -168,6 +247,8 @@ class SupportRag:
             "aplica",
             "activ",
             "bloque",
+            "descuento",
+            "contrasena",
         }
 
         def sentence_score(sentence: str, stoks: list[str]) -> float:
