@@ -1,0 +1,322 @@
+{
+  "total": 28,
+  "passed": 28,
+  "grounded_ok": 16,
+  "grounded_total": 16,
+  "escalate_ok": 12,
+  "escalate_total": 12,
+  "rows": [
+    {
+      "id": "a01",
+      "question": "¿Cuál es el límite comercial mensual por cuenta?",
+      "expect": "answer",
+      "got": "answer",
+      "score": 0.5543,
+      "overlap": 1.0,
+      "citations": [
+        "sop_limites"
+      ],
+      "ok": true
+    },
+    {
+      "id": "a02",
+      "question": "¿Cuánto es el descuento máximo en A1?",
+      "expect": "answer",
+      "got": "answer",
+      "score": 0.577,
+      "overlap": 1.0,
+      "citations": [
+        "sop_a1"
+      ],
+      "ok": true
+    },
+    {
+      "id": "a03",
+      "question": "¿Cuál es el plazo de activación de A1?",
+      "expect": "answer",
+      "got": "answer",
+      "score": 0.5831,
+      "overlap": 1.0,
+      "citations": [
+        "sop_a1"
+      ],
+      "ok": true
+    },
+    {
+      "id": "a04",
+      "question": "¿Cómo se verifica la identidad para un reset de contraseña?",
+      "expect": "answer",
+      "got": "answer",
+      "score": 0.5841,
+      "overlap": 1.0,
+      "citations": [
+        "sop_reset"
+      ],
+      "ok": true
+    },
+    {
+      "id": "a05",
+      "question": "¿Cuántos días puede durar una excepción temporal al límite?",
+      "expect": "answer",
+      "got": "answer",
+      "score": 0.4194,
+      "overlap": 1.0,
+      "citations": [
+        "sop_limites"
+      ],
+      "ok": true
+    },
+    {
+      "id": "a06",
+      "question": "¿Se envían contraseñas por chat?",
+      "expect": "answer",
+      "got": "answer",
+      "score": 0.4831,
+      "overlap": 1.0,
+      "citations": [
+        "sop_reset"
+      ],
+      "ok": true
+    },
+    {
+      "id": "a07",
+      "question": "¿Quién aprueba si se excede el límite comercial?",
+      "expect": "answer",
+      "got": "answer",
+      "score": 0.5971,
+      "overlap": 1.0,
+      "citations": [
+        "sop_limites"
+      ],
+      "ok": true
+    },
+    {
+      "id": "a08",
+      "question": "¿A qué clientes aplica la política A1?",
+      "expect": "answer",
+      "got": "answer",
+      "score": 0.5326,
+      "overlap": 1.0,
+      "citations": [
+        "sop_a1"
+      ],
+      "ok": true
+    },
+    {
+      "id": "p01",
+      "question": "¿Cuál es el tope mensual comercial de una cuenta?",
+      "expect": "answer",
+      "got": "answer",
+      "score": 0.5753,
+      "overlap": 1.0,
+      "citations": [
+        "sop_limites"
+      ],
+      "ok": true
+    },
+    {
+      "id": "p02",
+      "question": "En A1, ¿hasta qué porcentaje se puede descontar?",
+      "expect": "answer",
+      "got": "answer",
+      "score": 0.3815,
+      "overlap": 1.0,
+      "citations": [
+        "sop_a1"
+      ],
+      "ok": true
+    },
+    {
+      "id": "p03",
+      "question": "Tras firmar, ¿en cuántos días hábiles se activa A1?",
+      "expect": "answer",
+      "got": "answer",
+      "score": 0.4724,
+      "overlap": 1.0,
+      "citations": [
+        "sop_a1"
+      ],
+      "ok": true
+    },
+    {
+      "id": "p04",
+      "question": "Para restablecer la contraseña, ¿cómo confirmo que soy el usuario?",
+      "expect": "answer",
+      "got": "answer",
+      "score": 0.622,
+      "overlap": 0.8,
+      "citations": [
+        "sop_reset"
+      ],
+      "ok": true
+    },
+    {
+      "id": "p05",
+      "question": "¿Por cuánto tiempo máximo se aceptan excepciones al límite?",
+      "expect": "answer",
+      "got": "answer",
+      "score": 0.4025,
+      "overlap": 1.0,
+      "citations": [
+        "sop_limites"
+      ],
+      "ok": true
+    },
+    {
+      "id": "p06",
+      "question": "¿Puedo pedir la clave nueva por el chat de soporte?",
+      "expect": "answer",
+      "got": "answer",
+      "score": 0.4452,
+      "overlap": 1.0,
+      "citations": [
+        "sop_reset"
+      ],
+      "ok": true
+    },
+    {
+      "id": "p07",
+      "question": "Si me paso del límite comercial, ¿quién debe autorizarlo?",
+      "expect": "answer",
+      "got": "answer",
+      "score": 0.512,
+      "overlap": 1.0,
+      "citations": [
+        "sop_limites"
+      ],
+      "ok": true
+    },
+    {
+      "id": "p08",
+      "question": "¿La política A1 es solo para clientes enterprise?",
+      "expect": "answer",
+      "got": "answer",
+      "score": 0.5186,
+      "overlap": 1.0,
+      "citations": [
+        "sop_a1"
+      ],
+      "ok": true
+    },
+    {
+      "id": "e01",
+      "question": "política de viajes interplanetarios 2099",
+      "expect": "escalate",
+      "got": "escalate",
+      "score": 0.0,
+      "overlap": 0.0,
+      "citations": [],
+      "ok": true
+    },
+    {
+      "id": "e02",
+      "question": "¿Cuál es el horario de atención en feriados?",
+      "expect": "escalate",
+      "got": "escalate",
+      "score": 0.0,
+      "overlap": 0.0,
+      "citations": [],
+      "ok": true
+    },
+    {
+      "id": "e03",
+      "question": "¿Cómo se factura el soporte premium en dólares?",
+      "expect": "escalate",
+      "got": "escalate",
+      "score": 0.0,
+      "overlap": 0.0,
+      "citations": [],
+      "ok": true
+    },
+    {
+      "id": "e04",
+      "question": "¿Cuál es la política de teletrabajo para el área de ventas?",
+      "expect": "escalate",
+      "got": "escalate",
+      "score": 0.0,
+      "overlap": 0.0,
+      "citations": [],
+      "ok": true
+    },
+    {
+      "id": "e05",
+      "question": "¿Cuántas vacaciones tiene un empleado nuevo?",
+      "expect": "escalate",
+      "got": "escalate",
+      "score": 0.0,
+      "overlap": 0.0,
+      "citations": [],
+      "ok": true
+    },
+    {
+      "id": "e06",
+      "question": "¿Qué SLA de respuesta tiene un ticket crítico?",
+      "expect": "escalate",
+      "got": "escalate",
+      "score": 0.0,
+      "overlap": 0.0,
+      "citations": [],
+      "ok": true
+    },
+    {
+      "id": "v01",
+      "question": "¿Cuál es el límite de vacaciones comerciales por cuenta?",
+      "expect": "escalate",
+      "got": "escalate",
+      "score": 0.0,
+      "overlap": 0.0,
+      "citations": [],
+      "ok": true
+    },
+    {
+      "id": "v02",
+      "question": "¿Se envían contraseñas del WiFi corporativo por chat interno de marketing?",
+      "expect": "escalate",
+      "got": "escalate",
+      "score": 0.0,
+      "overlap": 0.0,
+      "citations": [],
+      "ok": true
+    },
+    {
+      "id": "v03",
+      "question": "¿El descuento máximo A1 aplica también a pasajes aéreos enterprise?",
+      "expect": "escalate",
+      "got": "escalate",
+      "score": 0.0,
+      "overlap": 0.0,
+      "citations": [],
+      "ok": true
+    },
+    {
+      "id": "v04",
+      "question": "¿Quién aprueba si se excede el límite de horas extras del comité?",
+      "expect": "escalate",
+      "got": "escalate",
+      "score": 0.0,
+      "overlap": 0.0,
+      "citations": [],
+      "ok": true
+    },
+    {
+      "id": "v05",
+      "question": "¿Cuántos días puede durar una excepción temporal al límite de estacionamiento?",
+      "expect": "escalate",
+      "got": "escalate",
+      "score": 0.0,
+      "overlap": 0.0,
+      "citations": [],
+      "ok": true
+    },
+    {
+      "id": "v06",
+      "question": "Para reset de contraseña del router de oficina, ¿basta el correo corporativo?",
+      "expect": "escalate",
+      "got": "escalate",
+      "score": 0.0,
+      "overlap": 0.0,
+      "citations": [],
+      "ok": true
+    }
+  ]
+}

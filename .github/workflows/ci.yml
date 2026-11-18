@@ -19,9 +19,12 @@ jobs:
           cache: pip
       - run: pip install -e ".[dev]"
       - run: pytest -q
-      - name: Experimento (informativo, no bloquea)
-        run: python -m support_copilot experiment --format md
-        continue-on-error: true
+      - name: Experimento extendido + llm-ci-gates
+        if: matrix.python-version == '3.12'
+        run: |
+          python -m support_copilot experiment --extended
+          pip install "git+https://github.com/Angelzaki/llm-ci-gates.git"
+          python -m llm_ci_gates --metrics results/experiment_report.json --thresholds ci/thresholds.yaml
 
   docker:
     runs-on: ubuntu-latest

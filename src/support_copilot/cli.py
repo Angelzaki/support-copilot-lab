@@ -39,6 +39,12 @@ def main(argv: list[str] | None = None) -> int:
         if args.extended:
             asks_path = ROOT / "samples" / "asks_extended.jsonl"
         report = evaluate(rag, load_asks(asks_path))
+        out_dir = ROOT / "results"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        (out_dir / "experiment_report.json").write_text(
+            json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+        (out_dir / "experiment_report.md").write_text(to_markdown(report) + "\n", encoding="utf-8")
         if args.format == "json":
             print(json.dumps(report, ensure_ascii=False, indent=2))
         else:
@@ -48,6 +54,7 @@ def main(argv: list[str] | None = None) -> int:
                 f"escalate {report['escalate_ok']}/{report['escalate_total']} · "
                 f"total {report['passed']}/{report['total']}"
             )
+            print(f"reportes → {out_dir}")
         return 0 if report["passed"] == report["total"] else 1
     if args.cmd == "serve":
         uvicorn.run("support_copilot.app:app", host=args.host, port=args.port)
