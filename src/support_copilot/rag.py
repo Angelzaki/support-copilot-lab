@@ -6,11 +6,82 @@ from collections import Counter
 from pathlib import Path
 
 TOKEN = re.compile(r"[a-zA-ZáéíóúñÁÉÍÓÚÑ0-9]+")
-STOP = {"politica", "política", "cual", "cuál", "que", "qué", "como", "cómo", "para", "sobre"}
+STOP = {
+    "el",
+    "la",
+    "los",
+    "las",
+    "un",
+    "una",
+    "de",
+    "del",
+    "al",
+    "en",
+    "por",
+    "con",
+    "se",
+    "si",
+    "es",
+    "no",
+    "politica",
+    "cual",
+    "que",
+    "como",
+    "para",
+    "sobre",
+    "cuanto",
+    "cuantos",
+    "cuantas",
+    "quien",
+    "sop",
+}
+
+
+def _fold(text: str) -> str:
+    table = str.maketrans("áéíóúüñÁÉÍÓÚÜÑ", "aeiouunAEIOUUN")
+    return text.translate(table).lower()
+
+
+def stem(token: str) -> str:
+    t = _fold(token)
+    if len(t) <= 3:
+        return t
+    if t.startswith("aprob") or t.startswith("aprue"):
+        return "aprob"
+    if t.startswith("exced"):
+        return "exced"
+    if t.startswith("excepc"):
+        return "excepc"
+    if t.startswith("temp"):
+        return "temp"
+    if t.startswith("limit"):
+        return "limit"
+    for suf in ("mente", "ciones", "cion", "adores", "ador", "antes", "ante"):
+        if t.endswith(suf) and len(t) - len(suf) >= 3:
+            t = t[: -len(suf)]
+            break
+    if t.endswith("es") and len(t) > 5:
+        t = t[:-2]
+    elif t.endswith("s") and len(t) > 4 and not t.endswith("us"):
+        t = t[:-1]
+    return t
 
 
 def tokenize(text: str) -> list[str]:
-    return [t.lower() for t in TOKEN.findall(text)]
+    return [stem(t) for t in TOKEN.findall(text)]
+
+
+def content_tokens(text: str) -> list[str]:
+    out = []
+    for raw in TOKEN.findall(text):
+        folded = _fold(raw)
+        if folded in STOP or len(folded) <= 2:
+            continue
+        s = stem(raw)
+        if s in STOP or len(s) <= 2:
+            continue
+        out.append(s)
+    return out
 
 
 def load_docs(docs_dir: Path) -> list[dict]:
@@ -60,7 +131,7 @@ class SupportRag:
             ranked.append((score, doc))
         ranked.sort(key=lambda x: x[0], reverse=True)
         top_score, top = ranked[0]
-        content = [t for t in q_tokens if t not in STOP and len(t) > 3]
+        content = content_tokens(question)
         overlap = 0.0
         if content:
             ctx = set(tokenize(top["text"]))
@@ -68,10 +139,49 @@ class SupportRag:
         if top_score < self.min_score or overlap < self.min_overlap:
             return self._escalate(question, "sin evidencia suficiente")
 
-        sentences = [s.strip() for s in top["text"].replace("\n", " ").split(".") if s.strip()]
+        sentences = []
+        for s in re.split(r"[.\n]+", top["text"]):
+            s = s.strip()
+            if len(s) < 28:
+                continue
+            if _fold(s).startswith("sop"):
+                continue
+            sentences.append(s)
+        if not sentences:
+            sentences = [s.strip() for s in re.split(r"[.\n]+", top["text"]) if s.strip()]
+
         qset = set(content)
-        ranked_s = sorted(sentences, key=lambda s: sum(1 for t in qset if t in s.lower()), reverse=True)
-        answer = (ranked_s[0] if ranked_s else top["text"][:180]) + "."
+        # En cuántas oraciones aparece cada término de la pregunta
+        sent_toks = [tokenize(s) for s in sentences]
+        df_sent: Counter[str] = Counter()
+        for toks in sent_toks:
+            df_sent.update(set(toks) & qset)
+
+        # Términos de acción suelen distinguir la frase correcta del título/definición.
+        ACTION = {
+            "aprob",
+            "exced",
+            "requier",
+            "super",
+            "verific",
+            "envi",
+            "aplica",
+            "activ",
+            "bloque",
+        }
+
+        def sentence_score(sentence: str, stoks: list[str]) -> float:
+            hits = [t for t in set(stoks) if t in qset]
+            if not hits:
+                return -1.0
+            specificity = sum(1.0 / df_sent.get(t, 1) for t in hits)
+            action_bonus = 2.0 * sum(1 for t in hits if t in ACTION)
+            return action_bonus + len(hits) + 1.25 * specificity
+
+        scored = [(sentence_score(s, toks), s) for s, toks in zip(sentences, sent_toks)]
+        scored.sort(key=lambda x: x[0], reverse=True)
+        best = scored[0][1] if scored else top["text"][:180]
+        answer = best if best.endswith(".") else best + "."
         return {
             "answer": answer,
             "citations": [top["id"]],

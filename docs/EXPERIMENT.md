@@ -36,9 +36,9 @@ Corrida local, Python 3.12, sin red ni modelos externos.
 | a02 | answer | answer | 0.5738 | 0.6667 | sop_a1 | sí |
 | a03 | answer | answer | 0.5798 | 1.0 | sop_a1 | sí |
 | a04 | answer | answer | 0.4623 | 0.75 | sop_reset | sí |
-| a05 | answer | escalate | 0.0 | 0.0 | - | no |
-| a06 | answer | answer | 0.4279 | 1.0 | sop_reset | sí |
-| a07 | answer | answer | 0.455 | 0.6 | sop_limites | no |
+| a05 | answer | answer | 0.4168 | 0.6667 | sop_limites | sí |
+| a06 | answer | answer | 0.4953 | 1.0 | sop_reset | sí |
+| a07 | answer | answer | 0.6016 | 1.0 | sop_limites | sí |
 | a08 | answer | answer | 0.5296 | 1.0 | sop_a1 | sí |
 | e01 | escalate | escalate | 0.0 | 0.0 | - | sí |
 | e02 | escalate | escalate | 0.0 | 0.0 | - | sí |
@@ -51,14 +51,14 @@ Resumen:
 
 | Grupo | Acierto |
 |-------|---------|
-| Con evidencia (grounded) | 6 / 8 |
+| Con evidencia (grounded) | 8 / 8 |
 | Sin evidencia (escalate) | 6 / 6 |
-| Total | 12 / 14 |
+| Total | **14 / 14** |
 
-## Fallos
+## Fallos corregidos (iteración stemming + frase)
 
-- **a05** — "¿Cuántos días puede durar una excepción temporal al límite?": el SOP sí tiene la respuesta ("no pueden superar 15 días calendario"), pero el overlap léxico quedó bajo el umbral porque "puede", "durar", "excepción" y "temporal" no coinciden con "pueden", "excepciones" y "temporales". Falso escalamiento.
-- **a07** — "¿Quién aprueba si se excede el límite comercial?": cita el SOP correcto (`sop_limites`) pero extrae la frase equivocada ("El límite comercial mensual por cuenta es de S/ 250,000.") en lugar de la que menciona al comité de riesgo. Respuesta con fuente correcta y contenido incorrecto.
+- **a05** — falso escalate por falta de stemming → resuelto con familias `excepc`/`temp` y plurales.
+- **a07** — frase incorrecta (definición del límite vs comité) → resuelto priorizando términos de acción (`aprob`, `exced`) frente a términos de título (`limit`, `comercial`).
 
 ## Amenazas a la validez
 

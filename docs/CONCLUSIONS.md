@@ -9,15 +9,15 @@ Basado en [EXPERIMENT.md](EXPERIMENT.md).
 | Comportamiento | Resultado |
 |----------------|-----------|
 | Escalar cuando el tema no está en los SOPs | 6 de 6 |
-| Responder con fuente y contenido correctos cuando sí está | 6 de 8 |
+| Responder con fuente y contenido correctos cuando sí está | **8 de 8** |
 | Respuestas inventadas | 0 (todas las respuestas son frases literales de un SOP) |
 
 ## Lectura
 
-1. **La abstención funciona en este set.** Ninguna pregunta fuera de corpus produjo respuesta. El diseño falla hacia el lado seguro: los dos errores observados son un falso escalamiento (a05) y una extracción de frase equivocada (a07), no una invención.
-2. **El fallo de a05 es de recall léxico.** Sin lematización, variantes de la misma palabra no cuentan como coincidencia. Bajar `min_overlap` lo resolvería, pero acerca el sistema a responder fuera de corpus; no se hizo porque no hay datos suficientes para calibrar el umbral con 14 consultas.
-3. **El fallo de a07 es de granularidad.** El ranking elige bien el documento, pero la selección de frase solo cuenta palabras coincidentes: la frase del límite repite dos términos de la pregunta ("límite", "comercial") y gana a la frase correcta ("Si se excede, se requiere aprobación del comité de riesgo"), que solo comparte "excede". Es el punto más débil porque entrega una respuesta con cita válida y contenido incorrecto; un revisor que solo mire la fuente no lo detectaría.
-4. **El escalamiento tiene costo medible.** El panel de KPIs de la UI expone la tasa de escalamiento y la confianza media, de modo que un cambio de umbral se pueda evaluar contra el costo de derivar a humanos.
+1. **La abstención sigue fallando hacia el lado seguro** en este set: 6/6 escalamientos correctos fuera de corpus.
+2. **Stemming ligero + bonus de términos de acción** cerró a05 y a07 sin bajar `min_overlap` (no se abrió la puerta a responder fuera de corpus).
+3. **a07 era el riesgo peor** (cita buena, frase mala). Priorizar `aprob`/`exced` frente a `limit`/`comercial` elige la oración del comité.
+4. **14/14 no generaliza solo:** el set es chico y escrito junto al sistema; el siguiente paso sigue siendo ampliar asks con paráfrasis y fuera-de-corpus que reutilicen vocabulario del SOP.
 
 ## Qué no se puede concluir
 
