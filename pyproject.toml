@@ -4,18 +4,20 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "support-copilot-lab"
-version = "0.1.0"
+version = "0.2.0"
 description = "Copiloto de soporte local con RAG, abstención y escalamiento"
 readme = "README.md"
 requires-python = ">=3.10"
-authors = [{ name = "Angel Salazar" }]
+authors = [{ name = "Angel Salazar Lima" }]
 dependencies = [
   "fastapi>=0.110.0",
   "uvicorn>=0.27.0",
   "jinja2>=3.1.0",
-  "pytest>=8.0.0",
-  "rich>=13.7.0",
+  "python-multipart>=0.0.9",
 ]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0.0", "httpx>=0.27.0"]
 
 [project.scripts]
 support-copilot = "support_copilot.cli:main"

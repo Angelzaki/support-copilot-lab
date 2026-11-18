@@ -1,0 +1,14 @@
+services:
+  support-copilot:
+    build: .
+    image: support-copilot-lab:0.2.0
+    ports:
+      - "8012:8012"
+    environment:
+      SUPPORT_COPILOT_FIREWALL: "0"
+    volumes:
+      - audit-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  audit-data:

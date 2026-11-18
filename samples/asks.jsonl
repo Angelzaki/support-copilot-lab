@@ -1,0 +1,14 @@
+{"id": "a01", "question": "¿Cuál es el límite comercial mensual por cuenta?", "expect": "answer", "source": "sop_limites", "contains": "250"}
+{"id": "a02", "question": "¿Cuánto es el descuento máximo en A1?", "expect": "answer", "source": "sop_a1", "contains": "12%"}
+{"id": "a03", "question": "¿Cuál es el plazo de activación de A1?", "expect": "answer", "source": "sop_a1", "contains": "5 días"}
+{"id": "a04", "question": "¿Cómo se verifica la identidad para un reset de contraseña?", "expect": "answer", "source": "sop_reset", "contains": "correo corporativo"}
+{"id": "a05", "question": "¿Cuántos días puede durar una excepción temporal al límite?", "expect": "answer", "source": "sop_limites", "contains": "15 días"}
+{"id": "a06", "question": "¿Se envían contraseñas por chat?", "expect": "answer", "source": "sop_reset", "contains": "No se envían"}
+{"id": "a07", "question": "¿Quién aprueba si se excede el límite comercial?", "expect": "answer", "source": "sop_limites", "contains": "comité de riesgo"}
+{"id": "a08", "question": "¿A qué clientes aplica la política A1?", "expect": "answer", "source": "sop_a1", "contains": "enterprise"}
+{"id": "e01", "question": "política de viajes interplanetarios 2099", "expect": "escalate"}
+{"id": "e02", "question": "¿Cuál es el horario de atención en feriados?", "expect": "escalate"}
+{"id": "e03", "question": "¿Cómo se factura el soporte premium en dólares?", "expect": "escalate"}
+{"id": "e04", "question": "¿Cuál es la política de teletrabajo para el área de ventas?", "expect": "escalate"}
+{"id": "e05", "question": "¿Cuántas vacaciones tiene un empleado nuevo?", "expect": "escalate"}
+{"id": "e06", "question": "¿Qué SLA de respuesta tiene un ticket crítico?", "expect": "escalate"}
