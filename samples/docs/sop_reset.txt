@@ -1,0 +1,5 @@
+SOP · Reset de acceso
+
+Para reset de contraseña el usuario debe verificar identidad por correo corporativo.
+El ticket se cierra cuando el usuario confirma acceso restaurado.
+No se envían contraseñas por chat.
